@@ -1,0 +1,16 @@
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/dist/
+*.jks
+keystore.properties
+# Rust test-server
+test-server/target/
+test-server/dist/
+test-server/gl-sms-testserver.json
