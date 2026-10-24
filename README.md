@@ -83,3 +83,7 @@ Kotlin + Jetpack Compose, `minSdk 26`, ingen eksterne biblioteker ud over Androi
 
 Appen og serverne er afprøvet på Android-emulatorer (SMS mellem to emulatorer, genstart, netværk væk og tilbage) og på rigtige telefoner med test-serveren.
 Leveringskvittering, dual-SIM og strømbesparelse afhænger af telefon og operatør — tjek dem på din egen telefon.
+
+## Licens
+
+[MIT](LICENSE) © 2026 Irvold IT & Kommunikation ApS.
