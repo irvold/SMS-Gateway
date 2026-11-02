@@ -12,8 +12,8 @@ android {
         applicationId = "dk.irvold.gongelandet.smsgateway"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 3
+        versionName = "1.2.0"
 
         // Ingen indbygget server: adressen indtastes i appen. -PapiBase=… forudfylder den (fx til emulatortest).
         val apiBase = (project.findProperty("apiBase") as String?) ?: ""

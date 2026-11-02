@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 class GlSmsApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        Storage.migrate(this)
         Ledger.init(this)
     }
 }

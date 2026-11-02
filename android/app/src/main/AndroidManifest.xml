@@ -38,6 +38,7 @@
         <!-- Holder forbindelsen til serveren åben (long-poll) og sender SMS'erne. -->
         <service
             android:name=".GatewayService"
+            android:directBootAware="true"
             android:exported="false"
             android:foregroundServiceType="specialUse">
             <property
@@ -45,11 +46,14 @@
                 android:value="Holder en forbindelse til serveren åben for at kunne sende SMS-koder med det samme" />
         </service>
 
-        <!-- Starter gatewayen igen efter genstart af telefonen og efter en opdatering af appen. -->
+        <!-- Starter gatewayen igen efter genstart af telefonen og efter en opdatering af appen.
+             LOCKED_BOOT_COMPLETED kommer, før telefonen er låst op; BOOT_COMPLETED først efter. -->
         <receiver
             android:name=".BootReceiver"
+            android:directBootAware="true"
             android:exported="true">
             <intent-filter>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
@@ -58,6 +62,7 @@
         <!-- Modtager "afsendt" og "leveret" fra mobilnettet for hver SMS. -->
         <receiver
             android:name=".SmsResultReceiver"
+            android:directBootAware="true"
             android:exported="false" />
     </application>
 </manifest>

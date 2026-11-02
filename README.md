@@ -21,7 +21,7 @@ afsender ──POST /api/sms──►  din server (kø)  ◄──long-poll─�
 
 ## Kom i gang
 
-1. Hent **[`releases/GL-SMS-1.1.0.apk`](releases/GL-SMS-1.1.0.apk)** og installér den på telefonen (Android 8+). Tillad installation fra denne kilde, hvis Android spørger.
+1. Hent **[`releases/GL-SMS-1.2.0.apk`](releases/GL-SMS-1.2.0.apk)** og installér den på telefonen (Android 8+). Tillad installation fra denne kilde, hvis Android spørger.
 2. Få en server at tale med — se [Server](#server) herunder.
 3. Åbn appen → **Tilføj server**: skriv adresse (fx `https://sms.eksempel.dk`) og nøgle → **Gem og test**.
 4. Giv tilladelserne under *Tilladelser*: *Send SMS*, *Notifikation*, og **undtag fra batterioptimering** (ellers kan Android lægge forbindelsen i dvale).
@@ -70,6 +70,12 @@ Kræver JDK 17 (Android Studios JBR duer). Release-udgaven er signeret med debug
 `-PapiBase=http://10.0.2.2:4000` forudfylder en serveradresse (fx til test i emulatoren).
 
 Kotlin + Jetpack Compose, `minSdk 26`, ingen eksterne biblioteker ud over AndroidX/Compose og coroutines.
+
+## Version 1.2.0
+
+- Gatewayen starter efter en genstart, også før telefonen er låst op (Direct Boot). Før ventede den på, at nogen indtastede PIN-koden.
+  Indstillinger og log ligger derfor i telefonens enhedsbeskyttede lager; data fra ældre versioner flyttes over ved første start efter opdateringen.
+  Har SIM-kortet en PIN-kode, kan der dog først sendes, når den er indtastet.
 
 ## Version 1.1.0
 

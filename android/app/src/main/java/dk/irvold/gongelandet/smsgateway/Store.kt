@@ -1,6 +1,7 @@
 package dk.irvold.gongelandet.smsgateway
 
 import android.content.Context
+import android.os.UserManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.json.JSONArray
 import org.json.JSONObject
@@ -22,9 +23,27 @@ data class Server(
     val usable get() = enabled && key.isNotBlank() && url.isNotBlank()
 }
 
+/**
+ * Appens data ligger i det enhedsbeskyttede lager (Direct Boot), så gatewayen kan starte efter en genstart,
+ * før nogen har låst telefonen op. En telefon i en skuffe bliver ellers ved med at vente på PIN-koden.
+ */
+object Storage {
+    fun ctx(c: Context): Context = c.applicationContext.createDeviceProtectedStorageContext()
+
+    /** Flytter data fra før 1.2.0 over fra det almindelige lager. Det kan kun læses, når telefonen er låst op. */
+    fun migrate(c: Context) {
+        val app = c.applicationContext
+        if (!app.getSystemService(UserManager::class.java).isUserUnlocked) return
+        val de = ctx(app)
+        if (File(app.dataDir, "shared_prefs/gw.xml").exists()) de.moveSharedPreferencesFrom(app, "gw")
+        val oldLedger = File(app.filesDir, "ledger.json")
+        if (oldLedger.exists()) oldLedger.copyTo(File(de.filesDir, "ledger.json"), overwrite = true).also { oldLedger.delete() }
+    }
+}
+
 /** Indstillinger (servere, om gatewayen skal køre m.m.). */
 object Prefs {
-    private fun sp(c: Context) = c.applicationContext.getSharedPreferences("gw", Context.MODE_PRIVATE)
+    private fun sp(c: Context) = Storage.ctx(c).getSharedPreferences("gw", Context.MODE_PRIVATE)
 
     /** Serverne. Har appen kun den ene server fra før flere servere, overtages den som "s1". */
     fun servers(c: Context): List<Server> {
@@ -130,7 +149,7 @@ object Ledger {
     val log = MutableStateFlow<List<Entry>>(emptyList())
 
     fun init(c: Context) = synchronized(lock) {
-        file = File(c.applicationContext.filesDir, "ledger.json")
+        file = File(Storage.ctx(c).filesDir, "ledger.json")
         entries = try {
             val arr = JSONArray(file.takeIf { it.exists() }?.readText() ?: "[]")
             MutableList(arr.length()) { fromJson(arr.getJSONObject(it)) }
